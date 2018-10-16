@@ -1,4 +1,4 @@
-body{
+html, body{
   width: 100%;
   min-height: 100%;
   margin: 0;
@@ -14,7 +14,7 @@ a, a:visited, a:hover, a:active{
 
 header{
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: flex-start;
   align-items: center;
   padding: 5px 0;
@@ -53,7 +53,7 @@ header a:hover, header a:active{
 }
 
 .thumbnail{
-  flex: 0 0 auto;
+  /* flex: 0 0 auto; */
   position: relative;
   width: 400px;
   height: 250px;
@@ -81,8 +81,7 @@ header a:hover, header a:active{
   transition: all 0.2s;
 }
 .img-wrap img{
-  height: 100%;
-  width: auto;
+  flex: 0;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
 }
@@ -175,4 +174,14 @@ header a:hover, header a:active{
   width: 90%;
   max-width: 1400px;
   margin: 10px auto;
+  overflow-x: hidden;
+}
+
+@media screen and (max-width: 400px) {
+  header a{
+    display: none;
+  }
+  header h1{
+    margin-left: auto;
+  }
 }
