@@ -40,18 +40,27 @@ header h1{
   text-transform: uppercase;
 }
 
+header .right{
+  margin-left: auto;
+  padding-right: 10px;
+}
+
 header a, header a:visited{
-  margin: 0 20px 0 auto;
+  margin: 0 10px;
+  font-size: 15px;
+  font-style: italic;
+}
+
+.button{
   padding: 5px 10px;
+  background: #4ea6ca;
   color: #fefefe;
   border: 2px solid #fefefe;
   border-radius: 5px;
-  font-size: 15px;
-  font-style: italic;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
 }
-header a:hover, header a:active{
+.button:hover, .button:active{
   background: #fefefe;
   color: #2b3031;
 }
@@ -62,7 +71,7 @@ header a:hover, header a:active{
   width: 400px;
   height: 250px;
   margin: 10px 30px;
-  border-radius: 2px;
+  border-radius: 3px;
   overflow: hidden;
 }
 .thumbnail a{
@@ -235,7 +244,6 @@ header a:hover, header a:active{
 .website-list li:nth-child(2n+1) a:hover, .website-list li:nth-child(2n+1) a:active{
   background: #4ea6ca;
 }
-
 
 #thumbnail-wrap{
   display: flex;
