@@ -141,7 +141,8 @@
       <div>
         <div>
           <button id="button-clear" type="button">Clear</button>
-          <input id="input-autoscroll" type="checkbox" checked><label for="input-autoscroll">auto-scroll</label>
+          <input id="input-autoscroll" type="checkbox" checked>
+          <label for="input-autoscroll">auto-scroll</label>
         </div>
         <div id="log-container"></div>
       </div>
@@ -170,7 +171,6 @@
           ws = new WebSocket(url);
         }
         catch (e) {
-          console.log(e, url);
           ws = null;
           return;
         }
@@ -185,9 +185,6 @@
 
         ws.onmessage = function (e) {
           logMessage(e.data);
-        };
-
-        ws.onerror = function (e) {
         };
       }
 
@@ -224,6 +221,5 @@
         $logContainer.innerHTML = "";
       }
     </script>
-
   </body>
 </html>
