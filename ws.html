@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Author" content="Ogus">
+    <meta name="Description" content="A super tiny, super simple, super fast
+    WebSocket client with a super basic interface, tied together to test any WebSocket connection">
+
+    <style media="screen">
+      html {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-flow: column nowrap;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        box-sizing: border-box;
+        background: #ffffff;
+        color: #4d4d4c;
+        font-family: Consolas, Monaco, "Lucida Console", "Courier New", Courier, monospace;
+        font-size: 12px;
+      }
+      body > div {
+        margin: 8px;
+        overflow: hidden;
+      }
+      body > div:nth-child(3) {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+      }
+      body > div > div {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        padding: 4px;
+        box-sizing: border-box;
+        background: #efefef;
+      }
+      body > div:nth-child(1) > div {
+        flex-flow: row wrap;
+        align-items: center;
+      }
+      body > div:nth-child(3) > div {
+        flex: 1;
+        padding: 0;
+        overflow: hidden;
+      }
+      body > div:nth-child(3) > div > div:first-child {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 4px;
+        box-sizing: border-box;
+      }
+      h2 {
+        margin: 0;
+        padding: 2px 4px;
+        background: #fff;
+        color: #f5871f;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      button {
+        margin: 4px;
+        padding: 4px 6px;
+        background: #8e908c;
+        color: #fff;
+        border: none;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      button:hover, button:focus, button:active {
+        background: #f5871f;
+      }
+      button:disabled {
+        background: #d6d6d6;
+        color: #fff;
+        cursor: default;
+      }
+      #input-url {
+        width: 300px;
+        margin: 4px 8px;
+        padding: 4px;
+        font-size: 11px;
+      }
+      #input-message {
+        display: block;
+        margin: 4px;
+      }
+      #input-autoscroll {
+        margin-left: auto;
+      }
+      #input-autoscroll + label {
+        margin-right: 4px;
+      }
+      #log-container {
+        flex: 1;
+        width: 100%;
+        padding: 4px;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      #log-container p {
+        margin: 8px 0;
+        word-wrap: break-word;
+      }
+    </style>
+
+    <title>Tiny WebSocket Interface</title>
+  </head>
+
+  <body>
+    <div>
+      <h2>Configuration</h2>
+      <div>
+        <input id="input-url" type="text" placeholder="WebSocket URL">
+        <button id="button-open" type="button">Open</button>
+        <button id="button-close" type="button" disabled>Close</button>
+      </div>
+    </div>
+
+    <div>
+      <h2>Message</h2>
+      <div>
+        <textarea id="input-message" rows="4" cols="100" placeholder="Write a message"></textarea>
+        <button id="button-send" type="button" disabled>Send</button>
+      </div>
+    </div>
+
+    <div>
+      <h2>Log</h2>
+      <div>
+        <div>
+          <button id="button-clear" type="button">Clear</button>
+          <input id="input-autoscroll" type="checkbox" checked><label for="input-autoscroll">auto-scroll</label>
+        </div>
+        <div id="log-container"></div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      var ws = null;
+
+      var $buttonOpen = document.getElementById("button-open");
+      var $buttonClose = document.getElementById("button-close");
+      var $buttonSend = document.getElementById("button-send");
+      var $buttonClear = document.getElementById("button-clear");
+      var $inputUrl = document.getElementById("input-url");
+      var $inputAutoScroll = document.getElementById("input-autoscroll");
+      var $inputMessage = document.getElementById("input-message");
+      var $logContainer = document.getElementById("log-container");
+
+      $buttonOpen.addEventListener("click", openWebSocket);
+      $buttonClose.addEventListener("click", closeWebSocket);
+      $buttonSend.addEventListener("click", sendMessage);
+      $buttonClear.addEventListener("click", clearLog);
+
+      function openWebSocket(e) {
+        var url = $inputUrl.value;
+        try {
+          ws = new WebSocket(url);
+        }
+        catch (e) {
+          console.log(e, url);
+          ws = null;
+          return;
+        }
+
+        ws.onopen = function (e) {
+          toggleWebSocket(true);
+        };
+
+        ws.onclose = function (e) {
+          toggleWebSocket(false);
+        };
+
+        ws.onmessage = function (e) {
+          logMessage(e.data);
+        };
+
+        ws.onerror = function (e) {
+        };
+      }
+
+      function closeWebSocket(e) {
+        if (ws != null) {
+          ws.close();
+        }
+      }
+
+      function toggleWebSocket(valid) {
+        $buttonOpen.disabled = valid;
+        $inputUrl.disabled = valid;
+        $buttonClose.disabled = !valid;
+        $buttonSend.disabled = !valid;
+      }
+
+      function sendMessage(e) {
+        var text = $inputMessage.value;
+        if (ws != null) {
+          ws.send(text);
+        }
+      }
+
+      function logMessage(text) {
+        var domElement = document.createElement("p");
+        domElement.textContent = text;
+        $logContainer.appendChild(domElement);
+        if ($inputAutoScroll.checked) {
+          $logContainer.scrollTop = $logContainer.scrollHeight;
+        }
+      }
+
+      function clearLog(e) {
+        $logContainer.innerHTML = "";
+      }
+    </script>
+
+  </body>
+</html>
