@@ -18,7 +18,6 @@
         width: 100%;
         height: 100%;
         margin: 0;
-        box-sizing: border-box;
         background: #ffffff;
         color: #4d4d4c;
         font-family: Consolas, Monaco, "Lucida Console", "Courier New", Courier, monospace;
@@ -61,7 +60,7 @@
       }
       h2 {
         margin: 0;
-        padding: 2px 4px;
+        padding: 4px;
         background: #fff;
         color: #f5871f;
         font-size: 12px;
@@ -69,7 +68,7 @@
       }
       button {
         margin: 4px;
-        padding: 4px 6px;
+        padding: 4px ;
         background: #8e908c;
         color: #fff;
         border: none;
@@ -93,6 +92,7 @@
       }
       #input-message {
         display: block;
+        max-width: 95%;
         margin: 4px;
       }
       #input-autoscroll {
@@ -124,15 +124,15 @@
       <div>
         <input id="input-url" type="text" placeholder="WebSocket URL">
         <button id="button-open" type="button">Open</button>
-        <button id="button-close" type="button" disabled>Close</button>
+        <button id="button-close" type="button">Close</button>
       </div>
     </div>
 
     <div>
       <h2>Message</h2>
       <div>
-        <textarea id="input-message" rows="4" cols="100" placeholder="Write a message"></textarea>
-        <button id="button-send" type="button" disabled>Send</button>
+        <textarea id="input-message" rows="4" cols="80" placeholder="Write a message"></textarea>
+        <button id="button-send" type="button">Send</button>
       </div>
     </div>
 
@@ -156,14 +156,16 @@
       var $buttonSend = document.getElementById("button-send");
       var $buttonClear = document.getElementById("button-clear");
       var $inputUrl = document.getElementById("input-url");
-      var $inputAutoScroll = document.getElementById("input-autoscroll");
       var $inputMessage = document.getElementById("input-message");
+      var $inputAutoScroll = document.getElementById("input-autoscroll");
       var $logContainer = document.getElementById("log-container");
 
-      $buttonOpen.addEventListener("click", openWebSocket);
-      $buttonClose.addEventListener("click", closeWebSocket);
-      $buttonSend.addEventListener("click", sendMessage);
-      $buttonClear.addEventListener("click", clearLog);
+      $buttonOpen.onclick = openWebSocket;
+      $buttonClose.onclick = closeWebSocket;
+      $buttonSend.onclick = sendMessage;
+      $buttonClear.onclick = clearLog;
+
+      toggleWebSocket(false);
 
       function openWebSocket(e) {
         var url = $inputUrl.value;
@@ -175,11 +177,11 @@
           return;
         }
 
-        ws.onopen = function (e) {
+        ws.onopen = function () {
           toggleWebSocket(true);
         };
 
-        ws.onclose = function (e) {
+        ws.onclose = function () {
           toggleWebSocket(false);
         };
 
@@ -188,7 +190,7 @@
         };
       }
 
-      function closeWebSocket(e) {
+      function closeWebSocket() {
         if (ws != null) {
           ws.close();
         }
@@ -198,10 +200,11 @@
         $buttonOpen.disabled = valid;
         $inputUrl.disabled = valid;
         $buttonClose.disabled = !valid;
+        $inputMessage.disabled = !valid;
         $buttonSend.disabled = !valid;
       }
 
-      function sendMessage(e) {
+      function sendMessage() {
         var text = $inputMessage.value;
         if (ws != null) {
           ws.send(text);
@@ -217,7 +220,7 @@
         }
       }
 
-      function clearLog(e) {
+      function clearLog() {
         $logContainer.innerHTML = "";
       }
     </script>
